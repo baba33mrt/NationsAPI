@@ -1,0 +1,28 @@
+{
+  "name": "nationsapi",
+  "version": "1.0.0",
+  "description": "a js package for API of NationsGlory Minecraft server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/baba33mrt/NationsAPI.git"
+  },
+  "keywords": [
+    "js",
+    "api",
+    "minecraft",
+    "nationsglory"
+  ],
+  "author": "baba33mrt",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/baba33mrt/NationsAPI/issues"
+  },
+  "homepage": "https://github.com/baba33mrt/NationsAPI#readme",
+  "dependencies": {
+    "axios": "^1.6.0"
+  }
+}
