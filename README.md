@@ -1,4 +1,8 @@
 # NationsAPI
+[![npm version](https://badge.fury.io/js/nationsapi.svg)](https://www.npmjs.com/package/nationsapi)
+![NPM](https://img.shields.io/npm/l/nationsapi)
+![npm](https://img.shields.io/npm/dt/nationsapi)
+![GitHub last commit](https://img.shields.io/github/last-commit/baba33mrt/nationsapi)
 
 Une interface de programmation simple pour accéder à l'API publique de NationsGlory.
 
