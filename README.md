@@ -28,7 +28,7 @@ npm install nationsapi
 Utilisation
 javascript
 ```javascript
-const NationsAPI = require('your-npm-package-name');
+const NationsAPI = require('nationsapi');
 const api = new NationsAPI('YOUR_API_TOKEN');
 
 // Obtenir le nombre de joueurs
