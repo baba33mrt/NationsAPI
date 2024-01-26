@@ -15,7 +15,7 @@ class NationsAPI {
         return this._makeRequest('GET', 'playercount');
     }
 
-    async getNotations(week=Math.floor((Date.now() / 1000 - 342100) / 604800) - 1, country = null, server) {
+    async getNotations(server, week=Math.floor((Date.now() / 1000 - 342100) / 604800) - 1, country = null) {
         const params = { week, country, server };
         const queryString = this._getQueryString(params);
         return this._makeRequest('GET', `notations${queryString}`);
