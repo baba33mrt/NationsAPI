@@ -6,7 +6,9 @@ class ServerAPI {
     }
 
     async getPlanning(server, month, year) {
-        if (typeof server !== 'string' || typeof month !== 'number' || typeof year !== 'number') throw new Error('Invalid parameters');
+        if (server && typeof server !== 'string') throw new Error('Invalid server');
+        if (month && typeof month !== 'number') throw new Error('Invalid month');
+        if (year && typeof year !== 'number') throw new Error('Invalid year');
         const params = { server, month, year };
         const queryString = await getQueryString(params);
         return makeRequest(this.apiToken, 'GET', `planning${queryString}`);
@@ -17,7 +19,7 @@ class ServerAPI {
     }
 
     async getHDV(server) {
-        if (typeof server !== 'string') throw new Error('Invalid parameters');
+        if (server && typeof server !== 'string') throw new Error('Invalid server');
         return makeRequest(this.apiToken, 'GET', `hdv/${server}/list`);
     }
 }
