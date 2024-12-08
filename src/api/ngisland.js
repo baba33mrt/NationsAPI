@@ -1,5 +1,4 @@
 const {makeRequest, getQueryString} = require('../utils/request');
-const {base64ToBuffer} = require("../utils/converters");
 
 const NgIslandAPI = (apiToken) => ({
 
@@ -11,9 +10,6 @@ const NgIslandAPI = (apiToken) => ({
         return makeRequest(apiToken, 'GET', `ngisland/list${queryString}`);
     },
 
-    // async convertFlagToBuffer(image) {
-    //    return base64ToBuffer(image);
-    // }
 })
 
 module.exports = NgIslandAPI;

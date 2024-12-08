@@ -31,5 +31,3 @@ class NationsAPI {
 }
 
 module.exports = NationsAPI;
-
-const a = new NationsAPI('apiToken');
