@@ -9,14 +9,14 @@ const WebhooksAPI = require('./api/webhooks');
 class NationsAPI {
     constructor(apiToken) {
         this.apiToken = apiToken;
-        this.oauth = new OAuthAPI();
-        this.server = new ServerAPI(apiToken);
-        this.country = new CountryAPI(apiToken);
-        this.user = new UserAPI(apiToken);
-        this.ngisland = new NgIslandAPI(apiToken);
+        this.oauth = OAuthAPI(apiToken);
+        this.server = ServerAPI(apiToken);
+        this.country = CountryAPI(apiToken);
+        this.user = UserAPI(apiToken);
+        this.ngisland = NgIslandAPI(apiToken);
         this.nabot= new NabotAPI(apiToken);
         this.nabotInstance = this.createNabotAPIClass();
-        this.webhooks = new WebhooksAPI(apiToken);
+        this.webhooks = WebhooksAPI(apiToken);
     }
 
     createNabotAPIClass() {
@@ -24,7 +24,7 @@ class NationsAPI {
         return class extends NabotAPI {
             constructor() {
                 super(apiToken);
-                this.initialize(); // Ensure sessionUid is initialized upon instantiation
+                this.initialize();
             }
         };
     }

@@ -14,12 +14,12 @@ class NabotAPI {
 
     async sendMessage(data) {
         if (typeof data !== "string") throw new Error("Message must be a string");
-        await this.initialize(); // Ensure sessionUid is initialized
+        await this.initialize();
         return makeRequest(this.apiToken, 'POST', 'nabot/CreateMessage', { message: data, session_uid: this.sessionUid });
     }
 
     async getSessionUid() {
-        await this.initialize(); // Ensure sessionUid is initialized
+        await this.initialize();
         return this.sessionUid;
     }
 

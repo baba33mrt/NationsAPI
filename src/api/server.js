@@ -1,9 +1,6 @@
 const {makeRequest, getQueryString} = require('../utils/request');
 
-class ServerAPI {
-    constructor(apiToken) {
-        this.apiToken = apiToken;
-    }
+const ServerAPI = (apiToken) => ({
 
     async getPlanning(server, month, year) {
         if (server && typeof server !== 'string') throw new Error('Invalid server');
@@ -11,17 +8,17 @@ class ServerAPI {
         if (year && typeof year !== 'number') throw new Error('Invalid year');
         const params = { server, month, year };
         const queryString = await getQueryString(params);
-        return makeRequest(this.apiToken, 'GET', `planning${queryString}`);
-    }
+        return makeRequest(apiToken, 'GET', `planning${queryString}`);
+    },
 
     async getPlayersCount() {
-        return makeRequest(this.apiToken, 'GET', 'playercount');
-    }
+        return makeRequest(apiToken, 'GET', 'playercount');
+    },
 
     async getHDV(server) {
         if (server && typeof server !== 'string') throw new Error('Invalid server');
-        return makeRequest(this.apiToken, 'GET', `hdv/${server}/list`);
+        return makeRequest(apiToken, 'GET', `hdv/${server}/list`);
     }
-}
+})
 
 module.exports = ServerAPI;
