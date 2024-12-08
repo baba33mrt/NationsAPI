@@ -1,3 +1,6 @@
 /package-lock.json
 .idea/
 nationsapi-1.0.0.tgz
+/tests/
+/pnpm-lock.yaml
+/.env
