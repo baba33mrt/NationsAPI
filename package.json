@@ -1,5 +1,5 @@
 {
-  "name": "nationsapi",
+  "name": "@baba33mrt/nationsapi",
   "version": "3.0.1",
   "description": "a js package for API of NationsGlory Minecraft server",
   "main": "src/index.js",
@@ -10,6 +10,7 @@
     "type": "git",
     "url": "git+https://github.com/baba33mrt/NationsAPI.git"
   },
+
   "keywords": [
     "js",
     "api",
@@ -22,7 +23,7 @@
     "url": "https://github.com/baba33mrt/NationsAPI/issues"
   },
   "publishConfig": {
-    "registry": "https://registry.npmjs.org"
+    "registry": "https://npm.pkg.github.com"
   },
   "homepage": "https://github.com/baba33mrt/NationsAPI#readme",
   "dependencies": {
