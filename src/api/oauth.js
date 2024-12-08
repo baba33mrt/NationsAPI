@@ -1,6 +1,6 @@
 const {makeRequest, getQueryString} = require('../utils/request');
 
-const OAuthAPI = (apiToken) => new OAuthAPI(apiToken) ({
+const OAuthAPI = (apiToken) => ({
 
     async createService(name, redirectUri) {
         if (name && typeof name !== 'string') throw new Error('Invalid name');
