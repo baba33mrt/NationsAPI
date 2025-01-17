@@ -29,6 +29,11 @@ const CountryAPI = (apiToken) => ({
         return makeRequest(apiToken, 'GET', `country/${server}/${country}`);
     },
 
+    async getCountries(server) {
+        if (server && typeof server !== 'string') throw new Error('Invalid server');
+        return makeRequest(apiToken, 'GET', `country/list/${server}`);
+    },
+
     async convertFlagToBuffer(flag) {
         return base64ToBuffer(flag);
     }
