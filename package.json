@@ -1,6 +1,6 @@
 {
   "name": "nationsapi",
-  "version": "3.1.0",
+  "version": "3.1.1",
   "description": "a js package for API of NationsGlory Minecraft server",
   "main": "src/index.js",
   "scripts": {
