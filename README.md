@@ -22,7 +22,7 @@ Une interface de programmation simple pour accéder à l'API publique de Nations
 # Installation
 
 ```bash
-npm install nationsapi
+npm install @baba33mrt/nationsapi
 ```
 Utilisation
 ```javascript
