@@ -3,6 +3,7 @@
 ![NPM](https://img.shields.io/npm/l/nationsapi)
 ![npm](https://img.shields.io/npm/dt/nationsapi)
 ![GitHub last commit](https://img.shields.io/github/last-commit/baba33mrt/nationsapi)
+[![Node.js Package](https://github.com/baba33mrt/NationsAPI/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/baba33mrt/NationsAPI/actions/workflows/npm-publish.yml)
 
 Une interface de programmation simple pour accéder à l'API publique de NationsGlory.
 
