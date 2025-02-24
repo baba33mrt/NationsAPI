@@ -1,9 +1,12 @@
 # NationsAPI
-[![npm version](https://badge.fury.io/js/nationsapi.svg)](https://www.npmjs.com/package/nationsapi)
-![NPM](https://img.shields.io/npm/l/nationsapi)
-![npm](https://img.shields.io/npm/dt/nationsapi)
-![GitHub last commit](https://img.shields.io/github/last-commit/baba33mrt/nationsapi)
-[![Node.js Package](https://github.com/baba33mrt/NationsAPI/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/baba33mrt/NationsAPI/actions/workflows/npm-publish.yml)
+[![npm version](https://badge.fury.io/js/@baba33mrt%2Fnationsapi.svg)](https://badge.fury.io/js/@baba33mrt%2Fnationsapi)
+[![License: MIT](https://img.shields.io/npm/l/@baba33mrt%2Fnationsapi)](https://opensource.org/licenses/MIT)
+[![npm downloads](https://img.shields.io/npm/dt/@baba33mrt%2Fnationsapi)](https://www.npmjs.com/package/@baba33mrt/nationsapi)
+[![GitHub last commit](https://img.shields.io/github/last-commit/baba33mrt/nationsapi)](https://github.com/baba33mrt/nationsapi/commits/main)
+[![Build Status](https://github.com/baba33mrt/nationsapi/actions/workflows/npm-publish.yml/badge.svg)](https://github.com/baba33mrt/nationsapi/actions/workflows/npm-publish.yml)
+[![GitHub issues](https://img.shields.io/github/issues/baba33mrt/nationsapi)](https://github.com/baba33mrt/nationsapi/issues)
+[![GitHub forks](https://img.shields.io/github/forks/baba33mrt/nationsapi)](https://github.com/baba33mrt/nationsapi/network)
+[![GitHub stars](https://img.shields.io/github/stars/baba33mrt/nationsapi)](https://github.com/baba33mrt/nationsapi/stargazers)
 
 Une interface de programmation simple pour accéder à l'API publique de NationsGlory.
 
