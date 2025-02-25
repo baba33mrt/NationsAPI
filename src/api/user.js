@@ -30,9 +30,11 @@ const UserAPI = (apiToken) => ({
 
         if (server && user.servers?.[server]) {
             return {
-                online: user.servers[server].online,
-                last_connection: user.servers[server].last_connection,
-                last_connectionTimestamp: new Date(user.servers[server].last_connection).getTime()
+                [server]: {
+                    online: user.servers[server].online,
+                    last_connection: user.servers[server].last_connection,
+                    last_connectionTimestamp: new Date(user.servers[server].last_connection).getTime()
+                }
             };
         }
 
