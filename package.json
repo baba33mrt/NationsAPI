@@ -1,6 +1,6 @@
 {
   "name": "@baba33mrt/nationsapi",
-  "version": "3.2.0",
+  "version": "3.2.1",
   "description": "a js package for API of NationsGlory Minecraft server",
   "main": "src/index.js",
   "scripts": {
