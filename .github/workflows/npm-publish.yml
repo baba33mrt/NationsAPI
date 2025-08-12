@@ -1,0 +1,56 @@
+name: Publish Node.js Package
+
+on:
+  release:
+    types: [created]
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - uses: pnpm/action-setup@v3 # Add this step to install pnpm
+        with:
+          version: 8 # Specify pnpm version
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+      - run: pnpm test
+      - name: Type Check
+        run: tsc --noEmit
+
+  publish-npm:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://registry.npmjs.org/
+      - uses: pnpm/action-setup@v3 # Add this step to install pnpm
+        with:
+          version: 8 # Specify pnpm version
+      - run: pnpm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+  publish-github-packages:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          registry-url: https://npm.pkg.github.com
+      - uses: pnpm/action-setup@v3 # Add this step to install pnpm
+        with:
+          version: 8 # Specify pnpm version
+      - run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.NODE_AUTH_TOKEN_GPKG }}" > .npmrc
+      - run: pnpm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN_GPKG }}
