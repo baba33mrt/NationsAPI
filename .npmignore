@@ -1,4 +1,8 @@
+/node_modules
+/src
 /package-lock.json
 .idea/
 /tests/
 nationsapi-1.0.0.tgz
+/pnpm-lock.yaml
+/.env

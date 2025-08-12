@@ -1,17 +1,21 @@
 {
   "name": "@baba33mrt/nationsapi",
-  "version": "3.2.1",
-  "description": "a js package for API of NationsGlory Minecraft server",
-  "main": "src/index.js",
+  "version": "4.0.0",
+  "description": "A TypeScript package for the NationsGlory Minecraft server API",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "scripts": {
-    "test": "echo \"Tests OK\" && exit 0"
+    "test": "echo \"Tests OK\" && exit 0",
+    "build": "tsc",
+    "prepublishOnly": "npm run build"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/baba33mrt/NationsAPI.git"
   },
   "keywords": [
-    "js",
+    "ts",
+    "typescript",
     "api",
     "minecraft",
     "nationsglory"
@@ -27,6 +31,9 @@
     "node-html-markdown": "^1.3.0"
   },
   "devDependencies": {
-    "dotenv": "^16.4.5"
+    "@types/axios": "^0.14.4",
+    "@types/node": "^24.2.1",
+    "dotenv": "^16.4.5",
+    "typescript": "^5.9.2"
   }
 }

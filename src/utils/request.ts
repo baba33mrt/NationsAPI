@@ -1,7 +1,7 @@
-const axios = require('axios');
-const { baseURL, getHeaders } = require('../config');
+import axios, { Method } from 'axios';
+import { baseURL, getHeaders } from '../config';
 
-const makeRequest = async (apiToken, method, endpoint, data = null) => {
+const makeRequest = async (apiToken: string | null, method: Method, endpoint: string, data: any = null): Promise<any> => {
     try {
         const response = await axios({
             method: method,
@@ -10,18 +10,15 @@ const makeRequest = async (apiToken, method, endpoint, data = null) => {
             data: data
         });
         return response.data;
-    } catch (error) {
+    } catch (error: any) {
         console.error(`Error making request to ${endpoint}:`, error.response.data);
         return { error: error.response.data };
     }
 };
 
-
-const getQueryString = async (params) => {
+const getQueryString = async (params: Record<string, any>): Promise<string> => {
     const queryParams = new URLSearchParams(params);
     return '?' + queryParams.toString();
 };
 
-
-
-module.exports = { makeRequest, getQueryString};
+export { makeRequest, getQueryString };

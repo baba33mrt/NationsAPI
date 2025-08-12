@@ -1,3 +1,5 @@
+/node_modules
+/dist
 /package-lock.json
 .idea/
 nationsapi-1.0.0.tgz
