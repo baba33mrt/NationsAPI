@@ -67,11 +67,13 @@ jobs:
           registry-url: https://npm.pkg.github.com
           scope: '@baba33mrt'   # <-- adapte au scope du package
 
-      # Écrire le token dans ~/.npmrc (pas dans le repo)
+      # Écrire la conf dans le fichier .npmrc que setup-node utilise (NPM_CONFIG_USERCONFIG)
       - name: Auth to GitHub Packages
         run: |
-          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NODE_AUTH_TOKEN_GPKG }}" > ~/.npmrc
-          npm config set always-auth=true
+          echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN_GPKG}" > "$NPM_CONFIG_USERCONFIG"
+          echo "always-auth=true" >> "$NPM_CONFIG_USERCONFIG"
+        env:
+          NODE_AUTH_TOKEN_GPKG: ${{ secrets.NODE_AUTH_TOKEN_GPKG }}
 
       - run: pnpm -v
       - run: pnpm publish
