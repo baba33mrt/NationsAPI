@@ -46,7 +46,7 @@ jobs:
           registry-url: https://registry.npmjs.org/
 
       - run: pnpm -v
-      - run: pnpm publish --yes --no-git-checks --publish-branch V4
+      - run: pnpm publish --no-interactive --no-git-checks --publish-branch V4
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
@@ -76,6 +76,6 @@ jobs:
           NODE_AUTH_TOKEN_GPKG: ${{ secrets.NODE_AUTH_TOKEN_GPKG }}
 
       - run: pnpm -v
-      - run: pnpm publish --yes --no-git-checks --publish-branch V4
+      - run: pnpm publish --no-interactive --no-git-checks --publish-branch V4
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN_GPKG }}
