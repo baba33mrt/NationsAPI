@@ -11,14 +11,15 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 20
-
       - uses: pnpm/action-setup@v3
         with:
           version: 9.12.2
           run_install: false
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: pnpm
 
       - run: pnpm -v
       - run: pnpm install --frozen-lockfile
@@ -26,6 +27,7 @@ jobs:
       - run: pnpm test
       - name: Type Check
         run: pnpm exec tsc --noEmit
+
 
   publish-npm:
     needs: build
