@@ -11,6 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      # pnpm d'abord si on veut cache: pnpm ensuite
       - uses: pnpm/action-setup@v3
         with:
           version: 9.12.2
@@ -27,7 +28,6 @@ jobs:
       - run: pnpm test
       - name: Type Check
         run: pnpm exec tsc --noEmit
-
 
   publish-npm:
     needs: build
@@ -50,7 +50,6 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
 
-
   publish-github-packages:
     needs: build
     runs-on: ubuntu-latest
@@ -66,8 +65,14 @@ jobs:
         with:
           node-version: 20
           registry-url: https://npm.pkg.github.com
+          scope: '@baba33mrt'   # <-- adapte au scope du package
 
-      - run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.NODE_AUTH_TOKEN_GPKG }}" > .npmrc
+      # Écrire le token dans ~/.npmrc (pas dans le repo)
+      - name: Auth to GitHub Packages
+        run: |
+          echo "//npm.pkg.github.com/:_authToken=${{ secrets.NODE_AUTH_TOKEN_GPKG }}" > ~/.npmrc
+          npm config set always-auth=true
+
       - run: pnpm -v
       - run: pnpm publish
         env:
