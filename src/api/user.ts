@@ -28,8 +28,7 @@ interface Skin {
     body: string;
 }
 
-interface User {
-    error?: any;
+export interface User {
     username: string;
     created_at: string;
     last_connection: string;
@@ -40,6 +39,12 @@ interface User {
     servers: Record<string, ServerData>;
 }
 
+export interface ApiError {
+    error: any;
+}
+
+export type UserResult = User | ApiError;
+
 interface OnlineStatus {
     [server: string]: {
         online: boolean;
@@ -47,7 +52,6 @@ interface OnlineStatus {
         last_connectionTimestamp?: number;
     };
 }
-
 
 const validateString = (value: any, fieldName: string): string => {
     if (typeof value !== 'string' || value.trim() === '') {
@@ -63,137 +67,130 @@ const validateSize = (size: any): number => {
     return size;
 };
 
+// Type guards
+const isApiError = (x: unknown): x is ApiError =>
+    typeof x === 'object' && x !== null && 'error' in x;
+
+const isUser = (x: unknown): x is User =>
+    typeof x === 'object' && x !== null && 'username' in x && 'servers' in x;
+
 const UserAPI = (apiToken: string) => ({
-    async get(username: string): Promise<User | { error: any }> {
+    async get(username: string): Promise<UserResult> {
         const validUsername = validateString(username, 'username');
-        return makeRequest(apiToken, 'GET', `user/${validUsername}`);
+        return makeRequest<UserResult>(apiToken, 'GET', `user/${validUsername}`);
     },
 
-    async onLine(username: string, server: string | null = null): Promise<OnlineStatus | { error: any }> {
+    async onLine(username: string, server: string | null = null): Promise<OnlineStatus | ApiError> {
         const validUsername = validateString(username, 'username');
         if (server !== null) validateString(server, 'server');
 
-        const user = await this.get(validUsername);
-        if (user.error) return { error: user.error };
-        if (!user.servers) throw new Error('Servers data is missing');
+        const res = await this.get(validUsername);
+        if (isApiError(res)) return res;
 
-        if (server && user.servers?.[server]) {
+        if (!res.servers) throw new Error('Servers data is missing');
+
+        if (server && res.servers[server]) {
             return {
                 [server]: {
-                    online: user.servers[server].online,
-                    last_connection: user.servers[server].last_connection,
-                    last_connectionTimestamp: user.servers[server].last_connection ? new Date(user.servers[server].last_connection!).getTime() : undefined
-                }
+                    online: res.servers[server].online,
+                    last_connection: res.servers[server].last_connection,
+                    last_connectionTimestamp: res.servers[server].last_connection
+                        ? new Date(res.servers[server].last_connection).getTime()
+                        : undefined,
+                },
             };
         }
 
         const serversOnline: OnlineStatus = {};
-        for (const [srv, data] of Object.entries(user.servers)) {
-            if (data.last_connection === null) {
-                serversOnline[srv] = { online: false, last_connection: null };
-            } else {
-                serversOnline[srv] = {
+        for (const [srv, data] of Object.entries(res.servers)) {
+            serversOnline[srv] = data.last_connection === null
+                ? { online: false, last_connection: null }
+                : {
                     online: data.online,
                     last_connection: data.last_connection,
                     last_connectionTimestamp: new Date(data.last_connection).getTime(),
                 };
-            }
         }
         return serversOnline;
     },
 
-    async getHead(username: string, relief: boolean = false, size: number = 16): Promise<string | { error: any }> {
+    async getHead(username: string, relief = false, size = 16): Promise<string | ApiError> {
         const validUsername = validateString(username, 'username');
         const validSize = validateSize(size);
-
-        const user = await this.get(validUsername);
-        if (user.error) return { error: user.error };
-
-        return `https://skins.nationsglory.fr/face/${relief ? '3d/' : ''}${user.username}/${validSize}`;
+        const res = await this.get(validUsername);
+        if (isApiError(res)) return res;
+        return `https://skins.nationsglory.fr/face/${relief ? '3d/' : ''}${res.username}/${validSize}`;
     },
 
-    async getBody(username: string, relief: boolean = false, size: number = 16): Promise<string | { error: any }> {
+    async getBody(username: string, relief = false, size = 16): Promise<string | ApiError> {
         const validUsername = validateString(username, 'username');
         const validSize = validateSize(size);
-
-        const user = await this.get(validUsername);
-        if (user.error) return { error: user.error };
-
-        return `https://skins.nationsglory.fr/body/${relief ? '3d/' : ''}${user.username}/${validSize}`;
+        const res = await this.get(validUsername);
+        if (isApiError(res)) return res;
+        return `https://skins.nationsglory.fr/body/${relief ? '3d/' : ''}${res.username}/${validSize}`;
     },
 
-    async getSkin(username: string): Promise<string | { error: any }> {
+    async getSkin(username: string): Promise<string | ApiError> {
         const validUsername = validateString(username, 'username');
-
-        const user = await this.get(validUsername);
-        if (user.error) return { error: user.error };
-
-        return user.skin.source;
+        const res = await this.get(validUsername);
+        if (isApiError(res)) return res;
+        return res.skin.source;
     },
 
-    async getDescription(username: string): Promise<string | { error: any }> {
+    async getDescription(username: string): Promise<string | ApiError> {
         const validUsername = validateString(username, 'username');
-
-        const user = await this.get(validUsername);
-        if (user.error) return { error: user.error };
-
-        return user.description;
+        const res = await this.get(validUsername);
+        if (isApiError(res)) return res;
+        return res.description;
     },
 
-    async getPrime(username: string): Promise<boolean | { error: any }> {
+    async getPrime(username: string): Promise<boolean | ApiError> {
         const validUsername = validateString(username, 'username');
-
-        const user = await this.get(validUsername);
-        if (user.error) return { error: user.error };
-
-        return user.is_prime;
+        const res = await this.get(validUsername);
+        if (isApiError(res)) return res;
+        return res.is_prime;
     },
-    async getSignature(username: string): Promise<string | { error: any }> {
+
+    async getSignature(username: string): Promise<string | ApiError> {
         const validUsername = validateString(username, 'username');
-
-        const user = await this.get(validUsername);
-        if (user.error) return { error: user.error };
-
-        return user.signature;
+        const res = await this.get(validUsername);
+        if (isApiError(res)) return res;
+        return res.signature;
     },
-    async signatureToMD(username: string): Promise<string | { error: any }> {
-        const validUsername = validateString(username, 'username');
 
-        const description = await this.getSignature(validUsername);
-        if (typeof description !== 'string') return description;
-
-        return NodeHtmlMarkdown.translate(description);
+    async signatureToMD(username: string): Promise<string | ApiError> {
+        const sig = await this.getSignature(username);
+        if (typeof sig !== 'string') return sig;
+        return NodeHtmlMarkdown.translate(sig);
     },
-    async getCreationDate(username: string): Promise<string | { error: any }> {
+
+    async getCreationDate(username: string): Promise<string | ApiError> {
         const validUsername = validateString(username, 'username');
-
-        const user = await this.get(validUsername);
-        if (user.error) return { error: user.error };
-
-        return user.created_at;
+        const res = await this.get(validUsername);
+        if (isApiError(res)) return res;
+        return res.created_at;
     },
-    async getLastConnection(username: string): Promise<string | { error: any }> {
+
+    async getLastConnection(username: string): Promise<string | ApiError> {
         const validUsername = validateString(username, 'username');
-
-        const user = await this.get(validUsername);
-        if (user.error) return { error: user.error };
-
-        return user.last_connection;
+        const res = await this.get(validUsername);
+        if (isApiError(res)) return res;
+        return res.last_connection;
     },
-    async getSkills(username: string, server: string | null = null): Promise<any | { error: any }> {
+
+    async getSkills(username: string, server: string | null = null): Promise<any | ApiError> {
         const validUsername = validateString(username, 'username');
+        const res = await this.get(validUsername);
+        if (isApiError(res)) return res;
 
-        const user = await this.get(validUsername);
-        if (user.error) return { error: user.error };
-        if (!user.servers) throw new Error('Servers data is missing');
+        if (!res.servers) throw new Error('Servers data is missing');
 
-
-        if (server && user.servers?.[server]) {
-            return user.servers[server].skills;
+        if (server && res.servers[server]) {
+            return res.servers[server].skills;
         }
 
         const serversSkills: Record<string, any> = {};
-        for (const [srv, data] of Object.entries(user.servers)) {
+        for (const [srv, data] of Object.entries(res.servers)) {
             serversSkills[srv] = data.skills;
         }
         return serversSkills;
