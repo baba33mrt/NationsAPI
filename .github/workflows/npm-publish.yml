@@ -10,30 +10,59 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-      - uses: pnpm/action-setup@v3 # Add this step to install pnpm
+          cache: 'pnpm'
+
+      - uses: pnpm/action-setup@v3
         with:
-          version: 8 # Specify pnpm version
+          version: 10.14.0
+          run_install: false
+
+      - run: pnpm -v
       - run: pnpm install --frozen-lockfile
       - run: pnpm build
       - run: pnpm test
       - name: Type Check
-        run: tsc --noEmit
+        run: pnpm exec tsc --noEmit
+      - name: Upload dist
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist
+          path: |
+            dist/**
+            package.json
+            README.md
+            LICENSE
+            pnpm-lock.yaml
 
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           registry-url: https://registry.npmjs.org/
-      - uses: pnpm/action-setup@v3 # Add this step to install pnpm
+          cache: 'pnpm'
+
+      - uses: pnpm/action-setup@v3
         with:
-          version: 8 # Specify pnpm version
+          version: 10.14.0
+          run_install: false
+
+      # Récupère la build produite
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: .
+      - run: pnpm install --frozen-lockfile --prod
+
       - run: pnpm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
@@ -43,15 +72,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           registry-url: https://npm.pkg.github.com
-      - uses: pnpm/action-setup@v3 # Add this step to install pnpm
+          cache: 'pnpm'
+
+      - uses: pnpm/action-setup@v3
         with:
-          version: 8 # Specify pnpm version
+          version: 10.14.0
+          run_install: false
+
+      - name: Download dist
+        uses: actions/download-artifact@v4
+        with:
+          name: dist
+          path: .
+
       - run: echo "//npm.pkg.github.com/:_authToken=${{ secrets.NODE_AUTH_TOKEN_GPKG }}" > .npmrc
       - run: pnpm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN_GPKG }}
-
