@@ -11,7 +11,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      # pnpm d'abord si on veut cache: pnpm ensuite
+      # Installer pnpm avant d'activer cache: pnpm
       - uses: pnpm/action-setup@v3
         with:
           version: 9.12.2
@@ -29,6 +29,7 @@ jobs:
       - name: Type Check
         run: pnpm exec tsc --noEmit
 
+
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
@@ -45,10 +46,23 @@ jobs:
           node-version: 20
           registry-url: https://registry.npmjs.org/
 
-      - run: pnpm -v
-      - run: pnpm publish --no-interactive --no-git-checks --publish-branch V4
+      # Auth + conf dans le .npmrc utilisé par setup-node (NPM_CONFIG_USERCONFIG)
+      - name: Configure npm auth and pnpm publish settings
+        run: |
+          # Auth npmjs
+          echo "//registry.npmjs.org/:_authToken=${NODE_AUTH_TOKEN}" > "$NPM_CONFIG_USERCONFIG"
+          # Eviter les vérifs git/branche pendant pnpm publish
+          echo "git-checks=false" >> "$NPM_CONFIG_USERCONFIG"
+          echo "publish-branch=V4" >> "$NPM_CONFIG_USERCONFIG"
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
+      - run: pnpm -v
+      # Pas d'options inconnues : pnpm ne supporte pas --yes/--no-interactive
+      - run: pnpm publish --no-git-checks --publish-branch V4 --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN }}
+
 
   publish-github-packages:
     needs: build
@@ -65,17 +79,20 @@ jobs:
         with:
           node-version: 20
           registry-url: https://npm.pkg.github.com
-          scope: '@baba33mrt'   # <-- adapte au scope du package
+          scope: '@baba33mrt'   # <-- adapte au scope de ton package (ex: "@org/nom")
 
-      # Écrire la conf dans le fichier .npmrc que setup-node utilise (NPM_CONFIG_USERCONFIG)
-      - name: Auth to GitHub Packages
+      # Auth + conf dans le .npmrc du job (NPM_CONFIG_USERCONFIG)
+      - name: Configure GPR auth and pnpm publish settings
         run: |
+          # Auth GitHub Packages
           echo "//npm.pkg.github.com/:_authToken=${NODE_AUTH_TOKEN_GPKG}" > "$NPM_CONFIG_USERCONFIG"
-          echo "always-auth=true" >> "$NPM_CONFIG_USERCONFIG"
+          # Eviter les vérifs git/branche pendant pnpm publish
+          echo "git-checks=false" >> "$NPM_CONFIG_USERCONFIG"
+          echo "publish-branch=V4" >> "$NPM_CONFIG_USERCONFIG"
         env:
           NODE_AUTH_TOKEN_GPKG: ${{ secrets.NODE_AUTH_TOKEN_GPKG }}
 
       - run: pnpm -v
-      - run: pnpm publish --no-interactive --no-git-checks --publish-branch V4
+      - run: pnpm publish --no-git-checks --publish-branch V4
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NODE_AUTH_TOKEN_GPKG }}
