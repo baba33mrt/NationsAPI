@@ -1,4 +1,7 @@
-import { makeRequest } from '../utils/request';
+import { makeRequest, ApiError } from '../utils/request';
+
+const isApiError = (x: unknown): x is ApiError =>
+    typeof x === 'object' && x !== null && 'error' in x;
 
 class NabotAPI {
     private apiToken: string;
@@ -10,15 +13,21 @@ class NabotAPI {
     }
 
     async initialize(): Promise<void> {
-        if (!this.sessionUid) {
+        if (this.sessionUid == null) {
             this.sessionUid = await this.createSession();
         }
     }
 
-    async sendMessage(data: string): Promise<any> { // Assuming any for now as I cannot test it
-        if (typeof data !== "string") throw new Error("Message must be a string");
+    async sendMessage(data: string): Promise<unknown | ApiError> {
+        if (typeof data !== 'string') throw new Error('Message must be a string');
         await this.initialize();
-        return makeRequest(this.apiToken, 'POST', 'nabot/CreateMessage', { message: data, session_uid: this.sessionUid });
+        // L’API renvoie un objet (inconnu ici) → on laisse unknown | ApiError
+        return makeRequest<unknown>(
+            this.apiToken,
+            'POST',
+            'nabot/CreateMessage',
+            { message: data, session_uid: this.sessionUid }
+        );
     }
 
     async getSessionUid(): Promise<number | null> {
@@ -27,13 +36,19 @@ class NabotAPI {
     }
 
     async setSessionUid(sessionUid: number): Promise<void> {
-        if (typeof sessionUid !== "number") throw new Error("Session UID must be a number");
+        if (typeof sessionUid !== 'number') throw new Error('Session UID must be a number');
         this.sessionUid = sessionUid;
     }
 
     async createSession(): Promise<number> {
-        const data = await makeRequest(this.apiToken, 'GET', 'nabot/createSession');
-        return data; // The API returns the session_uid directly, not an object with session_uid
+        const res = await makeRequest<number>(this.apiToken, 'GET', 'nabot/createSession');
+        if (isApiError(res)) {
+            throw new Error(`Failed to create session: ${JSON.stringify(res.error)}`);
+        }
+        if (typeof res !== 'number') {
+            throw new Error('Invalid session UID returned by API');
+        }
+        return res; // ✅ bien un number
     }
 }
 
